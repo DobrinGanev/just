@@ -78,29 +78,25 @@ function diffApply(obj, diff, pathConverter) {
       return false;
     }
     var thisProp;
-    while (thisProp = thisPath.shift()) {
+    while ((thisProp = thisPath.shift())) {
       if (!subObject[thisProp]) {
         subObject[thisProp] = {};
       }
       subObject = subObject[thisProp];
     }
     if (thisOp === REMOVE || thisOp === REPLACE) {
-      if (!obj[lastProp]) {
-        throw new Error([
-          'expected to find property',
-          thisDiff.path,
-          'in object',
-          obj
-        ].join(' '));
+      if (!subObject[lastProp]) {
+        throw new Error(['expected to find property', thisDiff.path, 'in object', obj].join(' '));
       }
     }
     if (thisOp === REMOVE) {
       delete subObject[lastProp];
     }
     if (thisOp === REPLACE || thisOp === ADD) {
-      subObject[lastProp] = obj.value;
+      subObject[lastProp] = thisDiff.value;
     }
   }
+  return subObject;
 }
 
 function jsonPatchPathConverter(stringPath) {

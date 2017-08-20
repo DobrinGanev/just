@@ -1,48 +1,45 @@
 var test = require('tape');
 var diffApplyModule = require('../../packages/collection-diff-apply');
-var diffApply = diffApplyModule.diff;
+var diffApply = diffApplyModule.diffApply;
 // var jsonPatchPathConverter = diffApplyModule.jsonPatchPathConverter;
-var compare = require('../../packages/collection-compare');
+// var compare = require('../../packages/collection-compare');
 
-test.only('flat objects', function (t) {
-  var obj1 = {a: 3, b: 5};
-  diffApply(obj1,
-    [
-      { 'op': 'remove', 'path': ['b'] },
-      { 'op': 'replace', 'path': ['a'], 'value': 4 },
-      { 'op': 'add', 'path': ['c'], 'value': 5 }
-    ]
-  );
-  t.ok(compare(obj1, {a: 4, c: 5}));
-//   t.ok(compare(diff(obj2, obj1), [
-//     { op: 'replace', 'path': ['a'], value: 4 }
-//   ]));
-//   t.ok(compare(diff(obj1, obj3), [
-//     { op: 'remove', 'path': ['b'] },
-//     { op: 'add', 'path': ['c'], value: 5 }
-//   ]));
-//   t.ok(compare(diff(obj3, obj1), [
-//     { op: 'remove', 'path': ['c'] },
-//     { op: 'add', 'path': ['b'], value: 5 }
-//   ]));
-//   t.ok(compare(diff(obj2, obj3), [
-//     { op: 'remove', 'path': ['b'] },
-//     { op: 'replace', 'path': ['a'], value: 4 },
-//     { op: 'add', 'path': ['c'], value: 5 }
-//   ]));
-//   t.ok(compare(diff(obj3, obj2), [
-//     { op: 'remove', 'path': ['c'] },
-//     { op: 'replace', 'path': ['a'], value: 3 },
-//     { op: 'add', 'path': ['b'], value: 5 }
-//   ]));
+// test('flat objects', function (t) {
+//   t.plan(2);
+//   var obj1 = { a: 3, b: 5 };
+//   diffApply(obj1, [{ op: 'replace', path: ['a'], value: 'hello' }]);
+//   t.deepEqual(obj1, { a: 'hello', b: 5 });
+
+//   var obj2 = { a: 3, b: 5 };
+//   diffApply(obj2, [
+//     { op: 'remove', path: ['b'] },
+//     { op: 'replace', path: ['a'], value: 4 },
+//     { op: 'add', path: ['c'], value: 5 }
+//   ]);
+//   t.deepEqual(obj2, { a: 4, c: 5 });
+//   t.end();
 // });
-//
-// test('objects with array properties', function (t) {
-//   t.plan(6);
-//
-//   var obj4 = {a: 4, b: [1, 2, 3]};
-//   var obj5 = {a: 3, b: [1, 2, 4]};
-//   var obj6 = {a: 3, b: [1, 2, 4, 5]};
+
+test('objects with array properties', function (t) {
+  t.plan(2);
+  var obj3 = { a: 4, b: [1, 2, 3] };
+  diffApply(obj3, [
+    { op: 'replace', path: ['a'], value: 3 },
+    { op: 'replace', path: ['b', '2'], value: 4 },
+    { op: 'add', path: ['b', '3'], value: 5 }
+  ]);
+  t.deepEqual(obj3, { a: 3, b: [1, 2, 4, 5] });
+
+  var obj4 = { a: 4, b: [1, 2, 3] };
+  diffApply(obj4, [
+    { op: 'remove', path: ['b', '2'] },
+    { op: 'replace', path: ['a'], value: 3 },
+    { op: 'replace', path: ['b', '1'], value: 3 }
+  ]);
+  t.deepEqual(obj4, { a: 3, b: [1, 3] });
+  t.end();
+});
+
 //
 //   t.ok(compare(diff(obj4, obj5), [
 //     { op: 'replace', 'path': ['a'], value: 3 },
@@ -386,7 +383,6 @@ test.only('flat objects', function (t) {
 //   t.ok(compare(diff(obj11, obj10, converter), [
 //     { op: 'remove', 'path': 'b' }
 //   ]));
-});
 
 // test('invalid inputs', function (t) {
 //   t.plan(6);
